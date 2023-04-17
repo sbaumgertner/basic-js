@@ -13,9 +13,37 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function transform(arr) {
+  if (!Array.isArray(arr)){
+    throw new Error("'arr' parameter must be an instance of the Array!");
+  }
+  let rules = ['--discard-next', '--discard-prev', '--double-next', '--double-prev'];
+  let result = Array.from(arr);
+  for (let i = 0; i < result.length - 1; i++){
+    if (result[i] == '--discard-next'){
+      if (i < result.length - 1 && !rules.includes(result[i + 1])){
+        result.splice(i + 1, 1);
+      }
+    }
+    else if (result[i] == '--discard-prev'){
+      if (i > 0 && !rules.includes(result[i - 1])){
+        result.splice(i - 1, 1);
+        i--;
+      }
+    }
+    else if (result[i] == '--double-next'){
+      if (i < result.length - 1 && !rules.includes(result[i + 1])){
+        result.splice(i + 1, 0, result[i + 1]);
+      }
+    }
+    else if (result[i] == '--double-prev'){
+      if (i > 0 && !rules.includes(result[i - 1])){
+        result.splice(i - 1, 0, result[i - 1]);
+        i++;
+      }
+    }
+  }
+  return result.filter(item => !rules.includes(item));
 }
 
 module.exports = {
